@@ -1,0 +1,24 @@
+body{
+    margin-left: 20px; 
+    background-color:aqua;
+    display: flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+}
+.chat{
+    background-color:#db6ddb;
+    padding: 2px;
+    border-radius: 14px;
+    display:inline-block;
+    margin-top: 20px;
+    
+}
+
+.msg{
+    background-color: dodgerblue;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 14px;
+}
