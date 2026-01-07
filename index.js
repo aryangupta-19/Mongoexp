@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const Chat  = require("./models/chat.js");
 const methodOverride= require("method-override");
+const ExpressError = require("./ExpressError.js");
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -18,7 +19,7 @@ main().then(() => {
 });
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/Watsap');
+  await mongoose.connect('mongodb://127.0.0.1:27017/fakewhatsap');
 }
 
 // let chat1 = new Chat({
@@ -46,8 +47,10 @@ app.get("/chats", async (req, res) => {
     res.render("index.ejs", {chats});
 });
 
+// New Route
 app.get("/chats/new", (req, res) => {
     res.render("new.ejs");
+    // throw new ExpressError(404, "Page not found");
 });
 
 app.post("/chats", (req,res) => {
@@ -70,6 +73,15 @@ app.post("/chats", (req,res) => {
     res.redirect("/chats");
 });
 
+// show route 
+app.get("/chats/:id", async (req, res, next) => {
+    let { id } = req.params;
+    let chat = await Chat.findById(id);
+    if (!chat) {
+        next(new ExpressError(500, "Chat Not Found!"));
+    }
+    res.render("edit.ejs", { chat });
+});
 
 // edit route 
 app.get("/chats/:id/edit", async (req, res) => { // note here we are not using then that is why we used async awwait
@@ -107,6 +119,12 @@ app.get("/", (req, res) => {
     res.send("Working Root...!");
 });  
 
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+   let {status = 500, msg = "Some error Occured!"} = err;
+   res.status(status).send(msg);
+});
 
 app.listen(8080, () => {
     console.log(`Server is Listening on port: 8080`);
