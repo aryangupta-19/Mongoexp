@@ -1,24 +1,191 @@
-body{
-    margin-left: 20px; 
-    background-color:aqua;
-    display: flex;
-    flex-wrap:wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-}
-.chat{
-    background-color:#db6ddb;
-    padding: 2px;
-    border-radius: 14px;
-    display:inline-block;
-    margin-top: 20px;
-    
+* {
+    box-sizing: border-box;
 }
 
-.msg{
-    background-color: dodgerblue;
+body {
+    margin: 0;
+    padding: 30px 50px;
+    background: #f0f2f5;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #222;
+}
+
+
+h3 {
+    text-align: center;
+    color: #075e54;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+
+body > form {
+    text-align: center;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    background-color: #128c7e;
     color: white;
-    padding: 5px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #075e54;
+    transform: translateY(-1px);
+}
+
+
+.chat {
+    background-color: white;
+    width: 350px;
+    min-height: 250px;
+
+    padding: 18px;
+    border-radius: 16px;
+
+    display: inline-block;
+    vertical-align: top;
+
+    margin: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    border-left: 5px solid #25d366;
+}
+
+
+.chat > p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.chat i {
+    color: #075e54;
+    font-weight: bold;
+}
+
+
+.msg {
+    background-color: #dcf8c6;
+    color: #222;
+
+    padding: 12px 16px;
     border-radius: 14px;
+
+    margin: 15px 0;
+
+    word-wrap: break-word;
+}
+
+
+.msg p {
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+
+.msg form {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.msg button {
+    background-color: #128c7e;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.msg button:hover {
+    background-color: #075e54;
+}
+
+
+.msg form[action*="DELETE"] button {
+    background-color: #e74c3c;
+}
+
+.msg form[action*="DELETE"] button:hover {
+    background-color: #c0392b;
+}
+
+
+.chat hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.chat > p:last-child {
+    font-size: 12px;
+    color: #999;
+    text-align: right;
+}
+
+
+
+
+body > form:not(.msg form) {
+    background: white;
+    width: 500px;
+    max-width: 90%;
+    margin: 30px auto;
+    padding: 25px;
+
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Inputs */
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    font-size: 15px;
+    font-family: inherit;
+
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #128c7e;
+    box-shadow: 0 0 0 2px rgba(18, 140, 126, 0.15);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+
+body > form button {
+    margin-top: 5px;
+}
+
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 10px;
+    }
+
+    .chat {
+        width: calc(100% - 20px);
+        margin: 10px;
+    }
+
+    body > form:not(.msg form) {
+        width: 95%;
+        padding: 20px;
+    }
 }
