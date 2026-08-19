@@ -53,42 +53,52 @@ app.get("/chats/new", (req, res) => {
     // throw new ExpressError(404, "Page not found");
 });
 
-app.post("/chats", (req,res) => {
-    let{from, to, msg} = req.body;
-    let newChat = new Chat({
-        from: from,
-        to: to,
-        msg: msg,
-        created_at: new Date()
-    });
 
-    newChat.save().then((res) => {  // this save is an asynchronous process -> should we use await and async -> see where there is then there is no need of await becoz jahan then use hota hai vahan auto async use ho rha hota hai -> genereally hum then and await ko sathme use nahi krte but agar use ker bhi denge to as such koi error nahi ayaga 
-        console.log(res);
-    }).catch((err) => {
-        console.log(err);
-    });
-
-    console.log(newChat);
-    // res.send("Working...!");
-    res.redirect("/chats");
+// create route 
+app.post("/chats", async (req,res, next) => {
+    try{
+        let{from, to, msg} = req.body;
+        let newChat = new Chat({
+            from: from,
+            to: to,
+            msg: msg,
+            created_at: new Date()
+        });
+    
+        await newChat.save();
+        res.redirect("/chats");
+    }catch(err){
+        // console.log(err);
+        next(err);
+    }
 });
+
+function asyncWrap(fn){
+    return function(req, res, next){
+        fn(req, res, next).catch((err) => next(err));
+    };
+}
 
 // show route 
-app.get("/chats/:id", async (req, res, next) => {
-    let { id } = req.params;
-    let chat = await Chat.findById(id);
-    if (!chat) {
-        next(new ExpressError(500, "Chat Not Found!"));
-    }
-    res.render("edit.ejs", { chat });
-});
+app.get("/chats/:id", asyncWrap( async (req, res, next) => {
+        let { id } = req.params;
+        let chat = await Chat.findById(id);
+        if (!chat) {
+            return next(new ExpressError(404, "Chat Not Found!"));
+        }
+        res.render("edit.ejs", { chat });
+}));
 
 // edit route 
-app.get("/chats/:id/edit", async (req, res) => { // note here we are not using then that is why we used async awwait
-    let {id} = req.params;
-    // search for chat in database using id
-    let chat = await Chat.findById(id);
-    res.render("edit.ejs", {chat});
+app.get("/chats/:id/edit", async (req, res, next) => { // note here we are not using then that is why we used async awwait
+    try{
+        let {id} = req.params;
+        // search for chat in database using id
+        let chat = await Chat.findById(id);
+        res.render("edit.ejs", {chat});
+    }catch(err){
+        next(err);
+    }
 });
 
 // Update route 
@@ -120,11 +130,29 @@ app.get("/", (req, res) => {
 });  
 
 
+
+// error handling 
+const handleValidationError = (err) => {
+    console.log("This is a validation Error hadler function (callback)");
+    console.log(err.message);
+    return err;
+}
+
+
+app.use((err, req, res, next) => {
+    console.log(err.name);
+    if(err.name === "CastError"){   
+        err = handleValidationError();
+    }
+    next(err);
+});
+
+
 // Error Handling Middleware
 app.use((err, req, res, next) => {
-   let {status = 500, msg = "Some error Occured!"} = err;
-   res.status(status).send(msg);
-});
+    let {status = 500, message = "Some error Occured!"} = err;
+    res.status(status).send(message);
+ });
 
 app.listen(8080, () => {
     console.log(`Server is Listening on port: 8080`);
